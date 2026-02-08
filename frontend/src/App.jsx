@@ -333,7 +333,6 @@
 //     </div>
 //   );
 // }
-
 import React, { useState, useContext } from 'react';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import Dashboard from './pages/Dashboard';
@@ -349,50 +348,31 @@ function LoginGateway() {
     const fd = Object.fromEntries(new FormData(e.target));
     try {
       const res = await api.post(isReg ? '/auth/register' : '/auth/login', fd);
-      if (!isReg) {
-        login(res.data.user, res.data.token);
-      } else {
-        setIsReg(false);
-        alert("Account Created! Sign in now.");
-      }
-    } catch (err) {
-      alert("Authentication Failed. Check fields.");
-    }
+      if (!isReg) login(res.data.user, res.data.token);
+      else { setIsReg(false); alert("Signed up! Log in now."); }
+    } catch (err) { alert("Auth Error"); }
   };
 
   if (user) return <Dashboard />;
 
   return (
     <div className="h-screen bg-slate-50 flex flex-col items-center justify-center p-6">
-      <div className="mb-10 text-center">
-          <div className="inline-block bg-indigo-600 p-5 rounded-3xl text-white shadow-2xl shadow-indigo-100 mb-4"><Layout size={32} /></div>
-          <h1 className="text-4xl font-black text-indigo-900 tracking-tighter italic">BugTracker</h1>
-      </div>
-      <form onSubmit={handleSubmit} className="bg-white p-12 rounded-[3rem] w-full max-w-md shadow-2xl border border-slate-100 animate-in slide-in-from-bottom-8 duration-500">
-        <h2 className="text-2xl font-black text-slate-800 mb-8">{isReg ? 'Start your journey' : 'Sign In'}</h2>
-        {isReg && <input name="name" placeholder="Full Name" className="w-full bg-slate-50 border p-4 rounded-2xl mb-4 outline-none focus:ring-2 ring-indigo-500 transition" required />}
-        <input name="email" type="email" placeholder="Email Address" className="w-full bg-slate-50 border p-4 rounded-2xl mb-4 outline-none focus:ring-2 ring-indigo-500 transition" required />
-        <input name="password" type="password" placeholder="Password" className="w-full bg-slate-50 border p-4 rounded-2xl mb-4 outline-none focus:ring-2 ring-indigo-500 transition" required />
+      <div className="mb-10 text-center"><div className="inline-block bg-indigo-600 p-5 rounded-3xl text-white shadow-2xl mb-4"><Layout size={32} /></div><h1 className="text-4xl font-black text-indigo-900 tracking-tighter italic">BugTracker</h1></div>
+      <form onSubmit={handleSubmit} className="bg-white p-12 rounded-[3rem] w-full max-w-md shadow-2xl border border-slate-100">
+        <h2 className="text-2xl font-black text-slate-800 mb-8">{isReg ? 'Join Us' : 'Sign In'}</h2>
+        {isReg && <input name="name" placeholder="Name" className="w-full bg-slate-50 border p-4 rounded-2xl mb-4" required />}
+        <input name="email" type="email" placeholder="Email" className="w-full bg-slate-50 border p-4 rounded-2xl mb-4" required />
+        <input name="password" type="password" placeholder="Password" className="w-full bg-slate-50 border p-4 rounded-2xl mb-4" required />
         {isReg && (
-          <select name="role" className="w-full bg-slate-50 border p-4 rounded-2xl mb-8 font-bold text-slate-500 outline-none">
-            <option value="manager">Project Manager</option>
-            <option value="developer">Developer</option>
-            <option value="viewer">Viewer</option>
+          <select name="role" className="w-full bg-slate-50 border p-4 rounded-2xl mb-8 font-bold text-slate-500">
+            <option value="manager">Manager</option><option value="developer">Developer</option><option value="viewer">Viewer</option>
           </select>
         )}
-        <button className="w-full bg-indigo-600 text-white p-5 rounded-2xl font-black shadow-2xl shadow-indigo-200 transition hover:bg-indigo-700 active:scale-95">{isReg ? 'Create Account' : 'Sign In'}</button>
-        <button type="button" onClick={() => setIsReg(!isReg)} className="w-full mt-8 text-indigo-600 text-sm font-bold tracking-tight">
-          {isReg ? 'Back to sign in' : 'Don’t have an account? Join free'}
-        </button>
+        <button className="w-full bg-indigo-600 text-white p-5 rounded-2xl font-black shadow-2xl">{isReg ? 'Create' : 'Enter'}</button>
+        <button type="button" onClick={() => setIsReg(!isReg)} className="w-full mt-8 text-indigo-600 text-sm font-bold tracking-tight">{isReg ? 'Sign in instead' : 'Join for free'}</button>
       </form>
     </div>
   );
 }
 
-export default function App() {
-  return (
-    <AuthProvider>
-      <LoginGateway />
-    </AuthProvider>
-  );
-}
+export default function App() { return ( <AuthProvider> <LoginGateway /> </AuthProvider> ); }
